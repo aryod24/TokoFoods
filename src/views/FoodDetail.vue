@@ -1,5 +1,5 @@
 <template>
-  <div class="food-detail">
+  <div class="barang-detail">
     <Navbar />
     <div class="container">
       <!-- breadcrumb -->
@@ -11,9 +11,9 @@
                 <router-link to="/" class="text-dark">Home</router-link>
               </li>
               <li class="breadcrumb-item">
-                <router-link to="/foods" class="text-dark">Foods</router-link>
+                <router-link to="/barangs" class="text-dark">Barangs</router-link>
               </li>
-              <li class="breadcrumb-item active" aria-current="page">Food Order</li>
+              <li class="breadcrumb-item active" aria-current="page">Detail Barang</li>
             </ol>
           </nav>
         </div>
@@ -21,33 +21,51 @@
 
       <div class="row mt-3">
         <div class="col-md-6">
-          <img :src=" '../assets/images/' + product.gambar " class="img-fluid shadow" />
+          <img :src="barang.transaksi" class="img-fluid shadow" alt="Gambar Barang" />
         </div>
         <div class="col-md-6">
           <h2>
-            <strong>{{ product.nama }}</strong>
+            <strong>{{ barang.barang_nama }}</strong>
           </h2>
           <hr />
           <h4>
-            Harga :
-            <strong>Rp. {{ product.harga }}</strong>
+            Harga Beli:
+            <strong>Rp. {{ barang.harga_beli }}</strong>
           </h4>
-          <form class="mt-4" v-on:submit.prevent>
-            <div class="form-group">
-              <label for="jumlah_pemesanan">Jumlah Pesan</label>
-              <input type="number" class="form-control" v-model="pesan.jumlah_pemesanan" />
-            </div>
-            <div class="form-group">
-              <label for="keterangan">Keterangan</label>
-              <textarea
-                v-model="pesan.keterangan"
-                class="form-control"
-                placeholder="Keterangan spt : Pedes, Nasi Setengah .."
-              ></textarea>
-            </div>
+          <h4>
+            Harga Jual:
+            <strong>Rp. {{ barang.harga_jual }}</strong>
+          </h4>
+          <button class="btn btn-secondary mt-4" @click="editMode = true">
+            <b-icon-pencil></b-icon-pencil> Edit Barang
+          </button>
+          <button class="btn btn-danger mt-4" @click="hapusBarang">
+            <b-icon-trash></b-icon-trash> Hapus Barang
+          </button>
+        </div>
+      </div>
 
-            <button type="submit" class="btn btn-success" @click="pemesanan">
-              <b-icon-cart></b-icon-cart>Pesan
+      <!-- Edit Form -->
+      <div v-if="editMode" class="row mt-3">
+        <div class="col-md-6">
+          <form class="mt-4" v-on:submit.prevent="updateBarang">
+            <div class="form-group">
+              <label for="barang_nama">Nama Barang</label>
+              <input type="text" class="form-control" v-model="barang.barang_nama" />
+            </div>
+            <div class="form-group">
+              <label for="harga_beli">Harga Beli</label>
+              <input type="number" class="form-control" v-model="barang.harga_beli" />
+            </div>
+            <div class="form-group">
+              <label for="harga_jual">Harga Jual</label>
+              <input type="number" class="form-control" v-model="barang.harga_jual" />
+            </div>
+            <button type="submit" class="btn btn-success me-2">
+              <b-icon-check></b-icon-check> Simpan Perubahan
+            </button>
+            <button type="button" class="btn btn-secondary" @click="editMode = false">
+              <b-icon-x></b-icon-x> Batal
             </button>
           </form>
         </div>
@@ -61,53 +79,116 @@ import Navbar from "@/components/Navbar.vue";
 import axios from "axios";
 
 export default {
-  name: "FoodDetail",
+  name: "BarangDetail",
   components: {
     Navbar,
   },
   data() {
     return {
-      product: {},
-      pesan: {},
+      barang: {
+        barang_nama: '',
+        harga_beli: 0,
+        harga_jual: 0,
+        transaksi: null,
+      },
+      editMode: false,
     };
   },
   methods: {
-    setProduct(data) {
-      this.product = data;
+    setBarang(data) {
+      this.barang = data;
     },
-    pemesanan() {
-      if (this.pesan.jumlah_pemesanan) {
-        this.pesan.products = this.product;
+    hapusBarang() {
+      axios
+        .delete(`http://localhost/PWL_POS/public/api/barangs/${this.$route.params.id}`)
+        .then(() => {
+          this.$router.push({ path: "/barangs" });
+          this.$toast.success("Barang berhasil dihapus", {
+            type: "success",
+            position: "top-right",
+            duration: 3000,
+            dismissible: true,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$toast.error("Terjadi kesalahan saat menghapus barang", {
+            type: "error",
+            position: "top-right",
+            duration: 3000,
+            dismissible: true,
+          });
+        });
+    },
+    onFileChange(e) {
+      this.barang.transaksi = e.target.files[0];
+    },
+    updateBarang() {
+      const params = new URLSearchParams();
+      if (this.barang.barang_nama) {
+        params.append('barang_nama', this.barang.barang_nama);
+      }
+      if (this.barang.harga_beli) {
+        params.append('harga_beli', this.barang.harga_beli);
+      }
+      if (this.barang.harga_jual) {
+        params.append('harga_jual', this.barang.harga_jual);
+      }
+      if (this.barang.transaksi) {
+        const formData = new FormData();
+        formData.append('transaksi', this.barang.transaksi);
         axios
-          .post("http://localhost:3000/keranjangs", this.pesan)
+          .put(`http://localhost/PWL_POS/public/api/barangs/${this.$route.params.id}`, formData, { params })
           .then(() => {
-            this.$router.push({ path: "/keranjang"})
-            this.$toast.success("Sukses Masuk Keranjang", {
+            this.editMode = false;
+            this.$toast.success("Barang berhasil diperbarui", {
               type: "success",
               position: "top-right",
               duration: 3000,
               dismissible: true,
             });
           })
-          .catch((err) => console.log(err));
+          .catch((err) => {
+            console.log(err);
+            this.$toast.error("Terjadi kesalahan saat memperbarui barang", {
+              type: "error",
+              position: "top-right",
+              duration: 3000,
+              dismissible: true,
+            });
+          });
       } else {
-        this.$toast.error("Jumlah Pesanan Harus diisi", {
-          type: "error",
-          position: "top-right",
-          duration: 3000,
-          dismissible: true,
-        });
+        axios
+          .put(`http://localhost/PWL_POS/public/api/barangs/${this.$route.params.id}`, null, { params })
+          .then(() => {
+            this.editMode = false;
+            this.$toast.success("Barang berhasil diperbarui", {
+              type: "success",
+              position: "top-right",
+              duration: 3000,
+              dismissible: true,
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            this.$toast.error("Terjadi kesalahan saat memperbarui barang", {
+              type: "error",
+              position: "top-right",
+              duration: 3000,
+              dismissible: true,
+            });
+          });
       }
     },
   },
   mounted() {
     axios
-      .get("http://localhost:3000/products/" + this.$route.params.id)
-      .then((response) => this.setProduct(response.data))
+      .get(`http://localhost/PWL_POS/public/api/barangs/${this.$route.params.id}`)
+      .then((response) => {
+        this.setBarang(response.data);
+        this.editMode = false; // Ensure edit form does not automatically open
+      })
       .catch((error) => console.log(error));
   },
 };
 </script>
-
-<style>
-</style>

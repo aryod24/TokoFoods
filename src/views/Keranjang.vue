@@ -1,6 +1,6 @@
 <template>
-  <div class="keranjang">
-    <Navbar :updateKeranjang="keranjangs" />
+  <div class="barang-detail">
+    <Navbar />
     <div class="container">
       <!-- breadcrumb -->
       <div class="row mt-4">
@@ -11,88 +11,35 @@
                 <router-link to="/" class="text-dark">Home</router-link>
               </li>
               <li class="breadcrumb-item">
-                <router-link to="/foods" class="text-dark">Foods</router-link>
+                <router-link to="/barangs" class="text-dark">Barangs</router-link>
               </li>
-              <li class="breadcrumb-item active" aria-current="page">Keranjang</li>
+              <li class="breadcrumb-item active" aria-current="page">Create Barang</li>
             </ol>
           </nav>
         </div>
       </div>
 
-      <div class="row">
-        <div class="col">
-          <h2>
-            Keranjang
-            <strong>Saya</strong>
-          </h2>
-          <div class="table-responsive mt-3">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Foto</th>
-                  <th scope="col">Makanan</th>
-                  <th scope="col">Keterangan</th>
-                  <th scope="col">Jumlah</th>
-                  <th scope="col">Harga</th>
-                  <th scope="col">Total Harga</th>
-                  <th scope="col">Hapus</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(keranjang, index) in keranjangs" :key="keranjang.id">
-                  <th>{{index+1}}</th>
-                  <td>
-                    <img
-                      :src=" '../assets/images/' + keranjang.products.gambar "
-                      class="img-fluid shadow"
-                      width="250"
-                    />
-                  </td>
-                  <td>
-                    <strong>{{ keranjang.products.nama }}</strong>
-                  </td>
-                  <td>{{ keranjang.keterangan ? keranjang.keterangan : "-" }}</td>
-                  <td>{{ keranjang.jumlah_pemesanan }}</td>
-                  <td align="right">Rp. {{ keranjang.products.harga }}</td>
-                  <td align="right">
-                    <strong>Rp. {{ keranjang.products.harga*keranjang.jumlah_pemesanan }}</strong>
-                  </td>
-                  <td align="center" class="text-danger">
-                    <b-icon-trash @click="hapusKeranjang(keranjang.id)"></b-icon-trash>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td colspan="6" align="right">
-                    <strong>Total Harga :</strong>
-                  </td>
-                  <td align="right">
-                    <strong>Rp. {{ totalHarga }}</strong>
-                  </td>
-                  <td></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Form Checkout -->
-      <div class="row justify-content-end">
-        <div class="col-md-4">
-          <form class="mt-4" v-on:submit.prevent>
+      <div class="row mt-3">
+        <div class="col-md-6">
+          <form class="mt-4" v-on:submit.prevent="createBarang">
             <div class="form-group">
-              <label for="nama">Nama :</label>
-              <input type="text" class="form-control" v-model="pesan.nama" />
+              <label for="barang_nama">Nama Barang</label>
+              <input type="text" class="form-control" v-model="barang.barang_nama" />
             </div>
             <div class="form-group">
-              <label for="noMeja">Nomor Meja :</label>
-              <input type="text" class="form-control" v-model="pesan.noMeja" />
+              <label for="harga_beli">Harga Beli</label>
+              <input type="number" class="form-control" v-model="barang.harga_beli" />
             </div>
-
-            <button type="submit" class="btn btn-success float-right" @click="checkout">
-              <b-icon-cart></b-icon-cart>Pesan
+            <div class="form-group">
+              <label for="harga_jual">Harga Jual</label>
+              <input type="number" class="form-control" v-model="barang.harga_jual" />
+            </div>
+            <div class="form-group">
+              <label for="transaksi">Upload Gambar</label>
+              <input type="file" class="form-control" @change="onFileChange" />
+            </div>
+            <button type="submit" class="btn btn-success">
+              <b-icon-cart></b-icon-cart>Buat Barang
             </button>
           </form>
         </div>
@@ -106,87 +53,67 @@ import Navbar from "@/components/Navbar.vue";
 import axios from "axios";
 
 export default {
-  name: "Keranjang",
+  name: "BarangDetail",
   components: {
     Navbar,
   },
   data() {
     return {
-      keranjangs: [],
-      pesan: {},
+      barang: {
+        barang_nama: '',
+        harga_beli: 0,
+        harga_jual: 0,
+        transaksi: null,
+      },
     };
   },
   methods: {
-    setKeranjangs(data) {
-      this.keranjangs = data;
+    onFileChange(e) {
+      this.barang.transaksi = e.target.files[0];
     },
-    hapusKeranjang(id) {
+    createBarang() {
+      const formData = new FormData();
+      formData.append('barang_nama', this.barang.barang_nama);
+      formData.append('harga_beli', this.barang.harga_beli);
+      formData.append('harga_jual', this.barang.harga_jual);
+      formData.append('transaksi', this.barang.transaksi);
+
       axios
-        .delete("http://localhost:3000/keranjangs/" + id)
+        .post("http://localhost/PWL_POS/public/api/barangs", formData)
         .then(() => {
-          this.$toast.error("Sukses Hapus Keranjang", {
+          this.$router.push({ path: "/barangs" });  // Mengubah path ke /foods
+          this.$toast.success("Barang berhasil dibuat", {
+            type: "success",
+            position: "top-right",
+            duration: 3000,
+            dismissible: true,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$toast.error("Terjadi kesalahan saat membuat barang", {
             type: "error",
             position: "top-right",
             duration: 3000,
             dismissible: true,
           });
-
-          // Update Data keranjang
-          axios
-            .get("http://localhost:3000/keranjangs")
-            .then((response) => this.setKeranjangs(response.data))
-            .catch((error) => console.log(error));
-        })
-        .catch((error) => console.log(error));
-    },
-    checkout() {
-      if (this.pesan.nama && this.pesan.noMeja) {
-        this.pesan.keranjangs = this.keranjangs;
-        axios
-          .post("http://localhost:3000/pesanans", this.pesan)
-          .then(() => {
-
-            // Hapus Semua Keranjang 
-            this.keranjangs.map(function (item) {
-              return axios
-                .delete("http://localhost:3000/keranjangs/" + item.id)
-                .catch((error) => console.log(error));
-            });
-
-            this.$router.push({ path: "/pesanan-sukses" });
-            this.$toast.success("Sukses Dipesan", {
-              type: "success",
-              position: "top-right",
-              duration: 3000,
-              dismissible: true,
-            });
-          })
-          .catch((err) => console.log(err));
-      } else {
-        this.$toast.error("Nama dan Nomor Meja Harus diisi", {
-          type: "error",
-          position: "top-right",
-          duration: 3000,
-          dismissible: true,
         });
-      }
-    },
-  },
-  mounted() {
-    axios
-      .get("http://localhost:3000/keranjangs")
-      .then((response) => this.setKeranjangs(response.data))
-      .catch((error) => console.log(error));
-  },
-  computed: {
-    totalHarga() {
-      return this.keranjangs.reduce(function (items, data) {
-        return items + data.products.harga * data.jumlah_pemesanan;
-      }, 0);
     },
   },
 };
 </script>
 
-<style>
+<style scoped>
+.card {
+  margin: 12px;
+}
+
+.card-product {
+  width: 18rem;
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
 </style>

@@ -1,47 +1,17 @@
 <template>
   <div class="hero">
-    <!-- Desktop -->
-    <div class="d-none d-md-block">
-      <div class="row mt-4">
-        <div class="col-md-6">
-          <div class="d-flex h-100">
-            <div class="justify-content-center align-self-center">
-              <h2>
-                <strong>Delicious Food Menu,</strong>
-                <br />in Your Gadget
-              </h2>
-              <p>Ayo segera pilih dan pesan makanan favorit Anda</p>
-              <router-link class="btn btn-lg btn-success" to="/foods">
-                <b-icon-arrow-right></b-icon-arrow-right>Pesan
-              </router-link>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <img src="../assets/images/hero.png" width="100%" />
-        </div>
-      </div>
-    </div>
-
-    <!-- Mobile -->
-    <div class="d-sm-block d-md-none">
-      <div class="row mt-4">
-        <div class="col-md-6 mb-3">
-          <img src="../assets/images/hero.png" width="100%" />
-        </div>
-        <div class="col-md-6">
-          <div class="d-flex h-100">
-            <div class="justify-content-center align-self-center">
-              <h2>
-                <strong>Delicious Food Menu,</strong>
-                <br />in Your Gadget
-              </h2>
-              <p>Ayo segera pilih dan pesan makanan favorit Anda</p>
-              <button class="btn btn-lg btn-success">
-                <b-icon-arrow-right></b-icon-arrow-right>Pesan
-              </button>
-            </div>
-          </div>
+    <!-- Hero Section -->
+    <div class="hero-background">
+      <div class="overlay">
+        <div class="card text-center p-4">
+          <h2>
+            <strong>Toko Laptop</strong>
+            <br />Terpercaya di Kediri
+          </h2>
+          <p>Ayo segera pilih Laptop idaman Anda</p>
+          <router-link class="btn btn-lg btn-success" to="/barangs">
+            <b-icon-arrow-right></b-icon-arrow-right> Pesan
+          </router-link>
         </div>
       </div>
     </div>
@@ -54,5 +24,33 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.hero-background {
+  position: relative;
+  background-image: url('../assets/images/acerlah.png'); /* Path to your image */
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 50vh; 
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.1); /* Semi-transparent black overlay */
+}
+
+.card {
+  position: absolute;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+}
 </style>

@@ -7,12 +7,12 @@
       <div class="row mt-4">
         <div class="col">
           <h2>
-            Best
-            <strong>Foods</strong>
+            List
+            <strong>Barang</strong>
           </h2>
         </div>
         <div class="col">
-          <router-link to="/foods" class="btn btn-success float-right">
+          <router-link to="/barangs" class="btn btn-success float-right">
             <b-icon-eye></b-icon-eye>Lihat Semua
           </router-link>
         </div>

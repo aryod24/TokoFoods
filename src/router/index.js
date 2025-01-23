@@ -15,17 +15,17 @@ Vue.use(VueRouter)
     component: Home
   },
   {
-    path: '/foods',
+    path: '/barangs',
     name: 'Foods',
     component: Foods
   },
   {
-    path: '/foods/:id',
+    path: '/barangs/:id',
     name: 'FoodDetail',
     component: FoodDetail
   },
   {
-    path: '/keranjang',
+    path: '/createbarang',
     name: 'Keranjang',
     component: Keranjang
   },

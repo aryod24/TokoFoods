@@ -2,7 +2,7 @@
   <div>
     <b-navbar toggleable="lg" type="light">
       <div class="container">
-        <b-navbar-brand href="#">Kulineran</b-navbar-brand>
+        <b-navbar-brand href="#">Laptops</b-navbar-brand>
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -12,15 +12,15 @@
               <router-link class="nav-link" to="/">Home</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/foods">Foods</router-link>
+              <router-link class="nav-link" to="/barangs">Barang</router-link>
             </li>
           </b-navbar-nav>
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
             <li class="nav-item">
-              <router-link class="nav-link" to="/keranjang">
-                Keranjang
+              <router-link class="nav-link" to="/createbarang">
+                Create Barang
                 <b-icon-bag></b-icon-bag>
                 <span
                   class="badge badge-success ml-2"
