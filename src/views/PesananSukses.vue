@@ -1,6 +1,6 @@
 <template>
   <div class="pesanan-sukses">
-    <Navbar />
+    <NavbarView />
     <div class="container">
       <div class="row justify-content-center mt-5">
         <div class="col text-center">
@@ -14,12 +14,12 @@
 </template>
 
 <script>
-import Navbar from "@/components/Navbar.vue";
+import NavbarView from "@/components/Navbar.vue";
 
 export default {
   name: "PesananSukses",
   components: {
-    Navbar,
+    NavbarView,
   },
 };
 </script>

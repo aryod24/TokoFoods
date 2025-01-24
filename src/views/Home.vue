@@ -1,8 +1,8 @@
 <template>
   <div class="home">
-    <Navbar />
+    <NavbarView />
     <div class="container">
-      <Hero />
+      <HeroView />
 
       <div class="row mt-4">
         <div class="col">
@@ -29,16 +29,16 @@
 
 <script>
 // @ is an alias to /src
-import Navbar from "@/components/Navbar.vue";
-import Hero from "@/components/Hero.vue";
+import NavbarView from "@/components/Navbar.vue";
+import HeroView from "@/components/Hero.vue";
 import CardProduct from "@/components/CardProduct.vue";
 import axios from "axios";
 
 export default {
   name: "Home",
   components: {
-    Navbar,
-    Hero,
+    NavbarView,
+    HeroView,
     CardProduct,
   },
   data() {

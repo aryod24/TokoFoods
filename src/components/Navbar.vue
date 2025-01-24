@@ -38,7 +38,7 @@
 import axios from "axios";
 
 export default {
-  name: "Navbar",
+  name: "NavbarView",
   data() {
     return {
       jumlah_pesanans: [],

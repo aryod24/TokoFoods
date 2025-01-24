@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import Barang from '../views/Barang.vue'
+import HomeView from '../views/Home.vue'
+import BarangView from '../views/Barang.vue'
 import BarangDetail from '../views/BarangDetail.vue'
 import CreateBarang from '../views/CreateBarang.vue'
 //import PesananSukses from '../views/PesananSukses.vue'
@@ -11,13 +11,13 @@ Vue.use(VueRouter)
   const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'HomeView',
+    component: HomeView
   },
   {
     path: '/barangs',
-    name: 'Barang',
-    component: Barang
+    name: 'BarangView',
+    component: BarangView
   },
   {
     path: '/barangs/:id',

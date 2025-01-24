@@ -1,6 +1,6 @@
 <template>
   <div class="barang-detail">
-    <Navbar />
+    <NavbarView />
     <div class="container">
       <!-- breadcrumb -->
       <div class="row mt-4">
@@ -49,13 +49,13 @@
 </template>
 
 <script>
-import Navbar from "@/components/Navbar.vue";
+import NavbarView from "@/components/Navbar.vue";
 import axios from "axios";
 
 export default {
   name: "BarangDetail",
   components: {
-    Navbar,
+    NavbarView,
   },
   data() {
     return {
