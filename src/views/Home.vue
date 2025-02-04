@@ -32,10 +32,9 @@
 import NavbarView from "@/components/Navbar.vue";
 import HeroView from "@/components/Hero.vue";
 import CardProduct from "@/components/CardProduct.vue";
-import axios from "axios";
 
 export default {
-  name: "Home",
+  name: "HomeView",
   components: {
     NavbarView,
     HeroView,
@@ -50,12 +49,6 @@ export default {
     setProducts(data) {
       this.products = data;
     },
-  },
-  mounted() {
-    axios
-      .get("http://localhost:3000/best-products")
-      .then((response) => this.setProducts(response.data))
-      .catch((error) => console.log(error))
   },
 };
 </script>

@@ -81,7 +81,7 @@ export default {
       axios
         .post("http://localhost/PWL_POS/public/api/barangs", formData)
         .then(() => {
-          this.$router.push({ path: "/barangs" });  // Mengubah path ke /foods
+          this.$router.push({ path: "/barangs" });  
           this.$toast.success("Barang berhasil dibuat", {
             type: "success",
             position: "top-right",

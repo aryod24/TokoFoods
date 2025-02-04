@@ -27,7 +27,7 @@ export default {
 <style scoped>
 .hero-background {
   position: relative;
-  background-image: url('../assets/images/acerlah.png'); /* Path to your image */
+  background-image: url('../assets/images/acerlah.png'); 
   background-size: cover;
   background-position: center;
   width: 100%;
@@ -43,7 +43,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.1); /* Semi-transparent black overlay */
+  background: rgba(0, 0, 0, 0.1); 
 }
 
 .card {

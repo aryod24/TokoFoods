@@ -186,7 +186,7 @@ export default {
       .get(`http://localhost/PWL_POS/public/api/barangs/${this.$route.params.id}`)
       .then((response) => {
         this.setBarang(response.data);
-        this.editMode = false; // Ensure edit form does not automatically open
+        this.editMode = false; 
       })
       .catch((error) => console.log(error));
   },

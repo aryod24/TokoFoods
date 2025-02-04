@@ -47,7 +47,7 @@ import CardProduct from "@/components/CardProduct.vue";
 import axios from "axios";
 
 export default {
-  name: "Barangs",
+  name: "BarangsView",
   components: {
     NavbarView,
     CardProduct,

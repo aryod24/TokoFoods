@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+      "target": "esnext",
+      "module": "esnext",
+      "strict": true,
+      "jsx": "preserve",
+      "importHelpers": true,
+      "moduleResolution": "bundler",  // Changed from "node" to "bundler"
+      "experimentalDecorators": true,
+      "esModuleInterop": true,
+      "sourceMap": true,
+      "baseUrl": ".",
+      "paths": {
+          "@/*": ["src/*"]
+      },
+      "lib": ["esnext", "dom"],
+      "allowJs": true,  // Added
+      "types": ["vite/client"]  // Added
+  },
+  "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx",
+      "src/**/*.vue",
+      "src/**/*.d.ts"  // Added
+  ],
+  "exclude": [
+      "node_modules"
+  ]
+}
