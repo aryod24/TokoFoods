@@ -53,6 +53,7 @@ import CardProduct from '@/components/CardProduct.vue'
 import type { Barang } from '@/types/Barang'
 
 const barangs = ref<Barang[]>([])
+
 const originalBarangs = ref<Barang[]>([])
 const search = ref('')
 

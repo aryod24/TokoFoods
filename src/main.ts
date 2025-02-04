@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import VueToast from 'vue-toast-notification'
+import ToastPlugin from 'vue-toast-notification'
 
 import 'vue-toast-notification/dist/theme-default.css'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -11,6 +11,6 @@ import './assets/css/main.css'
 const app = createApp(App)
 
 app.use(router)
-app.use(VueToast)
+app.use(ToastPlugin)
 
 app.mount('#app')

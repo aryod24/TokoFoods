@@ -21,7 +21,7 @@
 
       <div class="row mt-3">
         <div class="col-md-6">
-          <form class="mt-4" v-on:submit.prevent="createBarang">
+          <form class="mt-4" @submit.prevent="createBarang">
             <div class="form-group">
               <label for="barang_nama">Nama Barang</label>
               <input type="text" class="form-control" v-model="barang.barang_nama" />
@@ -48,59 +48,64 @@
   </div>
 </template>
 
-<script>
-import NavbarView from "@/components/Navbar.vue";
-import axios from "axios";
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useToast } from 'vue-toast-notification'
+import NavbarView from "@/components/Navbar.vue"
+import axios from "axios"
+import type { Barang } from '@/types/Barang'
 
-export default {
-  name: "BarangDetail",
-  components: {
-    NavbarView,
-  },
-  data() {
-    return {
-      barang: {
-        barang_nama: '',
-        harga_beli: 0,
-        harga_jual: 0,
-        transaksi: null,
-      },
-    };
-  },
-  methods: {
-    onFileChange(e) {
-      this.barang.transaksi = e.target.files[0];
-    },
-    createBarang() {
-      const formData = new FormData();
-      formData.append('barang_nama', this.barang.barang_nama);
-      formData.append('harga_beli', this.barang.harga_beli);
-      formData.append('harga_jual', this.barang.harga_jual);
-      formData.append('transaksi', this.barang.transaksi);
 
-      axios
-        .post("http://localhost/PWL_POS/public/api/barangs", formData)
-        .then(() => {
-          this.$router.push({ path: "/barangs" });  
-          this.$toast.success("Barang berhasil dibuat", {
-            type: "success",
-            position: "top-right",
-            duration: 3000,
-            dismissible: true,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          this.$toast.error("Terjadi kesalahan saat membuat barang", {
-            type: "error",
-            position: "top-right",
-            duration: 3000,
-            dismissible: true,
-          });
-        });
-    },
-  },
-};
+const router = useRouter()
+const toast = useToast()
+
+interface CreateBarangState extends Barang {
+  transaksi: File | null
+}
+
+const barang = ref<CreateBarangState>({
+  barang_id: 0,
+  barang_nama: '',
+  harga_beli: 0,
+  harga_jual: 0,
+  transaksi: null,
+})
+
+const onFileChange = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  if (target.files && target.files[0]) {
+    barang.value.transaksi = target.files[0]
+  }
+}
+
+const createBarang = async () => {
+  const formData = new FormData()
+  formData.append('barang_nama', barang.value.barang_nama)
+  formData.append('harga_beli', barang.value.harga_beli.toString())
+  formData.append('harga_jual', barang.value.harga_jual.toString())
+  
+  if (barang.value.transaksi) {
+    formData.append('transaksi', barang.value.transaksi)
+  }
+
+  try {
+    await axios.post<Barang>("http://localhost/PWL_POS/public/api/barangs", formData)
+    router.push({ path: "/barangs" })
+    toast.success("Barang berhasil dibuat", {
+      position: "top-right",
+      duration: 3000,
+      dismissible: true,
+    })
+  } catch (err) {
+    console.log(err)
+    toast.error("Terjadi kesalahan saat membuat barang", {
+      position: "top-right",
+      duration: 3000,
+      dismissible: true,
+    })
+  }
+}
 </script>
 
 <style scoped>

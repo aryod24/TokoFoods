@@ -48,7 +48,7 @@
       <!-- Edit Form -->
       <div v-if="editMode" class="row mt-3">
         <div class="col-md-6">
-          <form class="mt-4" v-on:submit.prevent="updateBarang">
+          <form class="mt-4" @submit.prevent="updateBarang">
             <div class="form-group">
               <label for="barang_nama">Nama Barang</label>
               <input type="text" class="form-control" v-model="barang.barang_nama" />
@@ -74,121 +74,113 @@
   </div>
 </template>
 
-<script>
-import NavbarView from "@/components/Navbar.vue";
-import axios from "axios";
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import NavbarView from "@/components/Navbar.vue"
+import axios from "axios"
+import { useToast } from 'vue-toast-notification'
+import type { Barang } from '@/types/Barang'
 
-export default {
-  name: "BarangDetail",
-  components: {
-    NavbarView,
-  },
-  data() {
-    return {
-      barang: {
-        barang_nama: '',
-        harga_beli: 0,
-        harga_jual: 0,
-        transaksi: null,
-      },
-      editMode: false,
-    };
-  },
-  methods: {
-    setBarang(data) {
-      this.barang = data;
-    },
-    hapusBarang() {
-      axios
-        .delete(`http://localhost/PWL_POS/public/api/barangs/${this.$route.params.id}`)
-        .then(() => {
-          this.$router.push({ path: "/barangs" });
-          this.$toast.success("Barang berhasil dihapus", {
-            type: "success",
-            position: "top-right",
-            duration: 3000,
-            dismissible: true,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          this.$toast.error("Terjadi kesalahan saat menghapus barang", {
-            type: "error",
-            position: "top-right",
-            duration: 3000,
-            dismissible: true,
-          });
-        });
-    },
-    onFileChange(e) {
-      this.barang.transaksi = e.target.files[0];
-    },
-    updateBarang() {
-      const params = new URLSearchParams();
-      if (this.barang.barang_nama) {
-        params.append('barang_nama', this.barang.barang_nama);
-      }
-      if (this.barang.harga_beli) {
-        params.append('harga_beli', this.barang.harga_beli);
-      }
-      if (this.barang.harga_jual) {
-        params.append('harga_jual', this.barang.harga_jual);
-      }
-      if (this.barang.transaksi) {
-        const formData = new FormData();
-        formData.append('transaksi', this.barang.transaksi);
-        axios
-          .put(`http://localhost/PWL_POS/public/api/barangs/${this.$route.params.id}`, formData, { params })
-          .then(() => {
-            this.editMode = false;
-            this.$toast.success("Barang berhasil diperbarui", {
-              type: "success",
-              position: "top-right",
-              duration: 3000,
-              dismissible: true,
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-            this.$toast.error("Terjadi kesalahan saat memperbarui barang", {
-              type: "error",
-              position: "top-right",
-              duration: 3000,
-              dismissible: true,
-            });
-          });
-      } else {
-        axios
-          .put(`http://localhost/PWL_POS/public/api/barangs/${this.$route.params.id}`, null, { params })
-          .then(() => {
-            this.editMode = false;
-            this.$toast.success("Barang berhasil diperbarui", {
-              type: "success",
-              position: "top-right",
-              duration: 3000,
-              dismissible: true,
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-            this.$toast.error("Terjadi kesalahan saat memperbarui barang", {
-              type: "error",
-              position: "top-right",
-              duration: 3000,
-              dismissible: true,
-            });
-          });
-      }
-    },
-  },
-  mounted() {
-    axios
-      .get(`http://localhost/PWL_POS/public/api/barangs/${this.$route.params.id}`)
-      .then((response) => {
-        this.setBarang(response.data);
-        this.editMode = false; 
-      })
-      .catch((error) => console.log(error));
-  },
-};
+const router = useRouter()
+const route = useRoute()
+const toast = useToast()
+
+interface BarangState extends Barang {
+  transaksi: File | string | null
+}
+
+const barang = ref<BarangState>({
+  barang_id: 0,
+  barang_nama: '',
+  harga_beli: 0,
+  harga_jual: 0,
+  transaksi: null,
+})
+const editMode = ref(false)
+
+const setBarang = (data: BarangState) => {
+  barang.value = data
+}
+
+const hapusBarang = async () => {
+  try {
+    await axios.delete(`http://localhost/PWL_POS/public/api/barangs/${route.params.id}`)
+    router.push({ path: "/barangs" })
+    toast.success("Barang berhasil dihapus", {
+      position: "top-right",
+      duration: 3000,
+      dismissible: true,
+    })
+  } catch (err) {
+    console.log(err)
+    toast.error("Terjadi kesalahan saat menghapus barang", {
+      position: "top-right",
+      duration: 3000,
+      dismissible: true,
+    })
+  }
+}
+
+const onFileChange = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  if (target.files && target.files[0]) {
+    barang.value.transaksi = target.files[0]
+  }
+}
+
+const updateBarang = async () => {
+  const params = new URLSearchParams()
+  if (barang.value.barang_nama) {
+    params.append('barang_nama', barang.value.barang_nama)
+  }
+  if (barang.value.harga_beli) {
+    params.append('harga_beli', barang.value.harga_beli.toString())
+  }
+  if (barang.value.harga_jual) {
+    params.append('harga_jual', barang.value.harga_jual.toString())
+  }
+
+  try {
+    if (barang.value.transaksi instanceof File) {
+      const formData = new FormData()
+      formData.append('transaksi', barang.value.transaksi)
+      await axios.put<Barang>(
+        `http://localhost/PWL_POS/public/api/barangs/${route.params.id}`,
+        formData,
+        { params }
+      )
+    } else {
+      await axios.put<Barang>(
+        `http://localhost/PWL_POS/public/api/barangs/${route.params.id}`,
+        null,
+        { params }
+      )
+    }
+    editMode.value = false
+    toast.success("Barang berhasil diperbarui", {
+      position: "top-right",
+      duration: 3000,
+      dismissible: true,
+    })
+  } catch (err) {
+    console.log(err)
+    toast.error("Terjadi kesalahan saat memperbarui barang", {
+      position: "top-right",
+      duration: 3000,
+      dismissible: true,
+    })
+  }
+}
+
+onMounted(async () => {
+  try {
+    const response = await axios.get<Barang>(`http://localhost/PWL_POS/public/api/barangs/${route.params.id}`)
+    setBarang(response.data as BarangState)
+    editMode.value = false
+  } catch (error) {
+    console.log(error)
+    toast.error("Terjadi kesalahan saat memuat data barang")
+  }
+})
 </script>
