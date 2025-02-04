@@ -5,7 +5,7 @@
       "strict": true,
       "jsx": "preserve",
       "importHelpers": true,
-      "moduleResolution": "bundler",  // Changed from "node" to "bundler"
+      "moduleResolution": "bundler",  
       "experimentalDecorators": true,
       "esModuleInterop": true,
       "sourceMap": true,
@@ -14,14 +14,13 @@
           "@/*": ["src/*"]
       },
       "lib": ["esnext", "dom"],
-      "allowJs": true,  // Added
-      "types": ["vite/client"]  // Added
+      "allowJs": true,  
   },
   "include": [
       "src/**/*.ts",
       "src/**/*.tsx",
       "src/**/*.vue",
-      "src/**/*.d.ts"  // Added
+      "src/**/*.d.ts" 
   ],
   "exclude": [
       "node_modules"

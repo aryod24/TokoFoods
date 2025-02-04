@@ -33,7 +33,11 @@
       </div>
 
       <div class="row mb-4">
-        <div class="col-md-4 mt-4" v-for="barang in barangs" :key="barang.barang_id">
+        <div 
+          class="col-md-4 mt-4" 
+          v-for="barang in barangs" 
+          :key="barang.barang_id"
+        >
           <CardProduct :barang="barang" />
         </div>
       </div>
@@ -41,42 +45,31 @@
   </div>
 </template>
 
-<script>
-import NavbarView from "@/components/Navbar.vue";
-import CardProduct from "@/components/CardProduct.vue";
-import axios from "axios";
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+import NavbarView from '@/components/Navbar.vue'
+import CardProduct from '@/components/CardProduct.vue'
+import type { Barang } from '@/types/Barang'
 
-export default {
-  name: "BarangsView",
-  components: {
-    NavbarView,
-    CardProduct,
-  },
-  data() {
-    return {
-      barangs: [],
-      search: '',
-    };
-  },
-  methods: {
-    setBarangs(data) {
-      this.barangs = data;
-    },
-    searchBarang() {
-      const query = this.search.toLowerCase();
-      this.barangs = this.originalBarangs.filter(barang =>
-        barang.barang_nama.toLowerCase().includes(query)
-      );
-    },
-  },
-  mounted() {
-    axios
-      .get("http://localhost/PWL_POS/public/api/barangs")
-      .then((response) => {
-        this.originalBarangs = response.data;
-        this.barangs = response.data;
-      })
-      .catch((error) => console.log(error));
-  },
-};
+const barangs = ref<Barang[]>([])
+const originalBarangs = ref<Barang[]>([])
+const search = ref('')
+
+const searchBarang = () => {
+  const query = search.value.toLowerCase()
+  barangs.value = originalBarangs.value.filter((barang: { barang_nama: string }) =>
+    barang.barang_nama.toLowerCase().includes(query)
+  )
+}
+
+onMounted(() => {
+  axios
+    .get<Barang[]>('http://localhost/PWL_POS/public/api/barangs')
+    .then((response: { data: any }) => {
+      originalBarangs.value = response.data
+      barangs.value = response.data
+    })
+    .catch((error: any) => console.error(error))
+})
 </script>
